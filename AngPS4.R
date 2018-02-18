@@ -15,7 +15,7 @@ montyhall()
 
 #Moving On-----------------------------------------------------------------------
 
-#Create new S4 class door
+#Create new S4 class door--------------------------------------------------------
 
 #Constructor Function
 setClass(Class="door",
@@ -66,7 +66,38 @@ new("door", chosenDoor=2, carDoor=1, switch="A") #test the representation; this 
 
 
 
+#Create new S4 Method ---------------------------------------------------------
 
+#Create generic
+setGeneric("PlayGame", function(x) { #set the name of the argument
+  standardGeneric("PlayGame")
+})
+
+
+#New method
+
+setMethod("PlayGame", "door",function(x){ #the x must be the same as the genernic
+  #x is a number 1, 2, or 3 chosen by the player
+  car<-sample(1:3,1) #this will randomly assign a number to car
+  pick<-sample(1:3,1)
+  trial<-new("door", chosenDoor=pick, carDoor=car) #Assign the sample correctly
+  if (trial@switch==T){
+    revealDoor<-c(1:3) #value of all doors
+    revealDoor2 <- revealDoor[!revealDoor %in% car] #Remove the door with the car
+    revealDoor3 <- revealDoor2[!revealDoor2 %in% pick] #remove the door originally picked
+    trial@chosenDoor<-sample(revealDoor3,1)
+  }
+  if (trial@chosenDoor==trial@carDoor){
+    winner<-T
+  } else {
+    winner<-F
+    }
+  
+}
+)
+
+testdoor
+PlayGame(testdoor)
 
 
 
