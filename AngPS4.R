@@ -25,9 +25,9 @@ setClass(Class="door",
            switch="logical"  #class logical
          ),
          prototype= prototype(
-           chosenDoor=sample(1:3,1), #data for the items
-           carDoor=sample(1:3,1),
-           switch=sample(c(T,F), 1)
+           chosenDoor= c(), #data for the items
+           carDoor=c(),
+           switch=c()
          )
 )
 
@@ -59,9 +59,9 @@ setMethod("initialize", "door", function(.Object, ...){
 new("door") ##########When I set the class, this will "randomly" create the same data each time.
             # If I reset the class, different data will repeat
 
-new("door", chosenDoor="m", carDoor="w", switch="P") #test the representation ; this will throw an error 
+play1 <- new("door", chosenDoor="m", carDoor="w", switch="P") #test the representation ; this will throw an error 
 new("door", chosenDoor=9, carDoor="w", switch=T) #test the validity; this will throw an error
-new("door", chosenDoor=2, carDoor=4, switch=T) #test the validity; this will throw an error
+play1 <- new("door", chosenDoor=2, carDoor=3, switch=T) #test the validity; this will throw an error
 new("door", chosenDoor=2, carDoor=1, switch="A") #test the representation; this will throw an error
 
 
@@ -80,7 +80,8 @@ setMethod("PlayGame", "door",function(x){ #the x must be the same as the generni
   #x is a number 1, 2, or 3 chosen by the player
   car<-sample(1:3,1) #this will randomly assign a number to car
   pick<-sample(1:3,1)
-  trial<-new("door", chosenDoor=pick, carDoor=car) #Assign the sample correctly
+  switchdoor<-sample(c(T,F),1)
+  trial<-new("door", chosenDoor=pick, carDoor=car, switch=switchdoor) #Assign the sample correctly
   # ^this should meet the "false" condition where pick is stored in the chosenDoor slot
   #The if loop will overwrite the chosenDoor slot
   if (trial@switch==T){
@@ -91,21 +92,43 @@ setMethod("PlayGame", "door",function(x){ #the x must be the same as the generni
   }
   if (trial@chosenDoor==trial@carDoor){
     winner<-T
+    print("Congratulations; you won a car!")
   } else {
     winner<-F
+    print("Congratulations; you won a goat!")
     }
-  winner
+  return(winner)
 }
 )
 debug(PlayGame)
+undebug(PlayGame)
 
-PlayGame()
+PlayGame(play1)
 
+play2<-new("door")
+PlayGame(play2)
+
+play3<-new("door")
+PlayGame(play3)
 
 #Simulation----------------------------------------------------------------
 simF<-rep(NA,1000)
 simT<-c(NA, 1000)
-simF1000<-apply(simF, 1, PlayGame(switch=F))
+PlayGame(play1)
+#Write a function that does this 1000 times-----------------------
+play3<-new("door")
+PlayGame(play3)
+
+repeat.PlayGame<-function(i){
+  playing<-new("door", chosenDoor=sample(c(1,2,3),1), carDoor=sample(c(1,2,3), 1),switch=T)
+  output<-PlayGame(playing)[1]
+  return(output)
+}
+sapply(x=1000, FUN = repeat.PlayGame(x))
+repeat.PlayGame(i=1:1000)
+#-----------------------------------------------------------------
+
+simF1000<-apply(, 1, PlayGame(switch=F))
 sum(simF1000) #Winner=T if the person wins. Sum counts TRUE as 1. Sum will tell how many times the player won
 
 simT1000<-apply(simT, 1, PlayGame(switch=F))
