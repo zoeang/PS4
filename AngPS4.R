@@ -80,17 +80,17 @@ setMethod("PlayGame", "door",function(x){ #the x must be the same as the generni
   #x is a number 1, 2, or 3 chosen by the player
   car<-sample(1:3,1) #this will randomly assign a number to car
   pick<-sample(1:3,1)
-  switchdoor<-sample(c(T,F),1)
-  trial<-new("door", chosenDoor=pick, carDoor=car, switch=switchdoor) #Assign the sample correctly
+ # switchdoor<-sample(c(T,F),1)
+ # trial<-new("door", chosenDoor=pick, carDoor=car, switch=switchdoor) #Assign the sample correctly
   # ^this should meet the "false" condition where pick is stored in the chosenDoor slot
   #The if loop will overwrite the chosenDoor slot
-  if (trial@switch==T){
+  if (x@switch==T){
     revealDoor<-c(1:3) #value of all doors
     revealDoor2 <- revealDoor[!revealDoor %in% car] #Remove the door with the car
     revealDoor3 <- revealDoor2[!revealDoor2 %in% pick] #remove the door originally picked
-    trial@chosenDoor<-sample(revealDoor3,1)
+    x@chosenDoor<-sample(revealDoor3,1)
   }
-  if (trial@chosenDoor==trial@carDoor){
+  if (x@chosenDoor==x@carDoor){
     winner<-T
     print("Congratulations; you won a car!")
   } else {
@@ -118,14 +118,24 @@ PlayGame(play1)
 #Write a function that does this 1000 times-----------------------
 play3<-new("door")
 PlayGame(play3)
-
-repeat.PlayGame<-function(i){
+#############
+#For True
+repeat.PlayGameT<-function(i){
   playing<-new("door", chosenDoor=sample(c(1,2,3),1), carDoor=sample(c(1,2,3), 1),switch=T)
-  output<-PlayGame(playing)[1]
+  output<-PlayGame(playing)
   return(output)
 }
-sapply(x=1000, FUN = repeat.PlayGame(x))
-repeat.PlayGame(i=1:1000)
+final <- sapply(X=c(1:1000), FUN = repeat.PlayGameT)
+sum(final)/1000
+
+#For False
+repeat.PlayGameF<-function(i){
+  playing<-new("door", chosenDoor=sample(c(1,2,3),1), carDoor=sample(c(1,2,3), 1),switch=F)
+  output<-PlayGame(playing)
+  return(output)
+}
+final <- sapply(X=c(1:1000), FUN = repeat.PlayGameF)
+sum(final)/1000
 #-----------------------------------------------------------------
 
 simF1000<-apply(, 1, PlayGame(switch=F))
