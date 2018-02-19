@@ -81,6 +81,8 @@ setMethod("PlayGame", "door",function(x){ #the x must be the same as the generni
   car<-sample(1:3,1) #this will randomly assign a number to car
   pick<-sample(1:3,1)
   trial<-new("door", chosenDoor=pick, carDoor=car) #Assign the sample correctly
+  # ^this should meet the "false" condition where pick is stored in the chosenDoor slot
+  #The if loop will overwrite the chosenDoor slot
   if (trial@switch==T){
     revealDoor<-c(1:3) #value of all doors
     revealDoor2 <- revealDoor[!revealDoor %in% car] #Remove the door with the car
@@ -92,14 +94,22 @@ setMethod("PlayGame", "door",function(x){ #the x must be the same as the generni
   } else {
     winner<-F
     }
-  
+  winner
 }
 )
+debug(PlayGame)
 
-testdoor
-PlayGame(testdoor)
+PlayGame()
 
 
+#Simulation----------------------------------------------------------------
+simF<-rep(NA,1000)
+simT<-c(NA, 1000)
+simF1000<-apply(simF, 1, PlayGame(switch=F))
+sum(simF1000) #Winner=T if the person wins. Sum counts TRUE as 1. Sum will tell how many times the player won
+
+simT1000<-apply(simT, 1, PlayGame(switch=F))
+sum(simT1000)
 
 
 
