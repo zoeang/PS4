@@ -132,7 +132,9 @@ final <- sapply(X=c(1:1000), FUN = repeat.PlayGameF)
 sum(final)/1000
 
 #-----------------------------------------------------------------
-
+#The "true" simulation give a proportion of approximately .1, whereas the "false"
+# simulation gives a proportion of ~.33. The "True" simulation does not work. THough the
+# switch strategy is best, that is not evident from this exercise. 
 
 
 
