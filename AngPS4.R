@@ -59,12 +59,11 @@ setMethod("initialize", "door", function(.Object, ...){
 new("door") ##########When I set the class, this will "randomly" create the same data each time.
             # If I reset the class, different data will repeat
 
-play1 <- new("door", chosenDoor="m", carDoor="w", switch="P") #test the representation ; this will throw an error 
+new("door", chosenDoor="m", carDoor="w", switch="P") #test the representation ; this will throw an error 
 new("door", chosenDoor=9, carDoor="w", switch=T) #test the validity; this will throw an error
-play1 <- new("door", chosenDoor=2, carDoor=3, switch=T) #test the validity; this will throw an error
 new("door", chosenDoor=2, carDoor=1, switch="A") #test the representation; this will throw an error
 
-
+play1 <- new("door", chosenDoor=2, carDoor=3, switch=T) #test the validity; this will work
 
 #Create new S4 Method ---------------------------------------------------------
 
@@ -77,25 +76,27 @@ setGeneric("PlayGame", function(x) { #set the name of the argument
 #New method
 
 setMethod("PlayGame", "door",function(x){ #the x must be the same as the genernic
-  #x is a number 1, 2, or 3 chosen by the player
-  car<-sample(1:3,1) #this will randomly assign a number to car
-  pick<-sample(1:3,1)
- # switchdoor<-sample(c(T,F),1)
- # trial<-new("door", chosenDoor=pick, carDoor=car, switch=switchdoor) #Assign the sample correctly
-  # ^this should meet the "false" condition where pick is stored in the chosenDoor slot
+  #x is an object of class door
+  #the indented things shouldn't be in the function, but seemed relevant at some point
+        #car<-sample(1:3,1) #this will randomly assign a number to car
+        #pick<-sample(1:3,1)
+        # switchdoor<-sample(c(T,F),1)
+       # trial<-new("door", chosenDoor=pick, carDoor=car, switch=switchdoor) #Assign the sample correctly
+        # ^this should meet the "false" condition where pick is stored in the chosenDoor slot
   #The if loop will overwrite the chosenDoor slot
   if (x@switch==T){
     revealDoor<-c(1:3) #value of all doors
-    revealDoor2 <- revealDoor[!revealDoor %in% car] #Remove the door with the car
-    revealDoor3 <- revealDoor2[!revealDoor2 %in% pick] #remove the door originally picked
+    revealDoor2 <- revealDoor[!revealDoor %in% x@carDoor] #Remove the door with the car
+    revealDoor3 <- revealDoor2[!revealDoor2 %in% x@chosenDoor] #remove the door originally picked
     x@chosenDoor<-sample(revealDoor3,1)
-  }
+  } 
+
   if (x@chosenDoor==x@carDoor){
     winner<-T
     print("Congratulations; you won a car!")
   } else {
     winner<-F
-    print("Congratulations; you won a goat!")
+    print("Have a goat.")
     }
   return(winner)
 }
@@ -105,16 +106,9 @@ undebug(PlayGame)
 
 PlayGame(play1)
 
-play2<-new("door")
-PlayGame(play2)
-
-play3<-new("door")
-PlayGame(play3)
 
 #Simulation----------------------------------------------------------------
-simF<-rep(NA,1000)
-simT<-c(NA, 1000)
-PlayGame(play1)
+
 #Write a function that does this 1000 times-----------------------
 play3<-new("door")
 PlayGame(play3)
@@ -136,13 +130,9 @@ repeat.PlayGameF<-function(i){
 }
 final <- sapply(X=c(1:1000), FUN = repeat.PlayGameF)
 sum(final)/1000
+
 #-----------------------------------------------------------------
 
-simF1000<-apply(, 1, PlayGame(switch=F))
-sum(simF1000) #Winner=T if the person wins. Sum counts TRUE as 1. Sum will tell how many times the player won
-
-simT1000<-apply(simT, 1, PlayGame(switch=F))
-sum(simT1000)
 
 
 
