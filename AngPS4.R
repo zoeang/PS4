@@ -1,3 +1,4 @@
+
 #Getting Started-------------------------------------------------------------------
 montyhall<-function(pick){ #I took away the second door argument because the user shouldn't be allowed to decide that
   pick<-sample(1:3, 1)
